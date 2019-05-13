@@ -1,0 +1,32 @@
+{
+  "name": "AwesomeProject",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "start_dev": "node node_modules/react-native/local-cli/cli.js start --port 8082",
+    "test": "jest",
+    "build_apk_mac": "cd android && ./gradlew clean && ./gradlew assembleRelease",
+    "build_apk_windows": "cd android && gradlew clean && gradlew assembleRelease",
+    "install_apk": "react-native run-android --variant=release",
+    "install_build": "cd android && ./gradlew installRelease"
+  },
+  "dependencies": {
+    "moment": "^2.24.0",
+    "react": "16.6.3",
+    "react-native": "0.57.8",
+    "react-native-modal-datetime-picker": "^7.4.0",
+    "react-native-nfc-manager": "^1.2.2",
+    "react-native-uuid": "^1.4.9"
+  },
+  "devDependencies": {
+    "babel-jest": "23.6.0",
+    "babel-preset-expo": "^5.1.1",
+    "jest": "23.6.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.6.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
