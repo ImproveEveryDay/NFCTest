@@ -36,6 +36,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.title = 'NFC test';
+        this.loaded = false;
         this.state = {
             supported: true,
             enabled: false,
@@ -44,6 +45,10 @@ class App extends Component {
                 productNumber: '',
                 productDate: '',
                 deliveryDays: 0,
+                deviceSKU: '',
+                hardwareVersion: '',
+                softwareVersion: '',
+                specialMessages: '',
             },
             // rtdType: RtdType.URL,
             tag: {},
@@ -59,13 +64,11 @@ class App extends Component {
                     this._startNfc();
                     this._startDetection();
                 }
-                //put register event here
-
             })
     }
 
     componentWillUnmount() {
-        this._stopDetection()
+        this._stopDetection();
         if (this._stateChangedSubscription) {
             this._stateChangedSubscription.remove();
         }
@@ -77,15 +80,55 @@ class App extends Component {
             <ScrollView style={{ flex: 1 }}>
                 {Platform.OS === 'ios' && <View style={{ height: 60 }} />}
 
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', marginLeft: 20,}}>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-start', marginLeft: 20, }}>
                     <Text style={{ marginTop: 20, }}>{`Is NFC supported ? ${supported}`}</Text>
                     <Text>{`Is NFC enabled (Android only)? ${enabled}`}</Text>
                     {/* <Button style={{ marginTop: 10 }} onPress={this._goToNfcSetting} title='Go to NFC setting' /> */}
-                    <TouchableOpacity style={styles.button} onPress={this._goToNfcSetting}>
+                    {/* <TouchableOpacity style={styles.button} onPress={this._goToNfcSetting}>
                         <Text style={styles.buttonLabel}>Go to NFC setting</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
+                    <Text style={{color: 'blue', borderBottomWidth: 1, borderBottomColor: 'blue'}} onPress={this._goToNfcSetting}>Go to NFC setting</Text>
                     <Text style={styles.header}>Product Information</Text>
 
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Product SKU:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={productInfor.deviceSKU}
+                            onChangeText={deviceSKU => {
+                                this.state.productInfor.deviceSKU = deviceSKU;
+                                this.setState({
+                                    productInfor: this.state.productInfor
+                                })
+                            }}
+                        />
+                    </View>
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Hardware Version:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={productInfor.hardwareVersion}
+                            onChangeText={hardwareVersion => {
+                                this.state.productInfor.hardwareVersion = hardwareVersion;
+                                this.setState({
+                                    productInfor: this.state.productInfor
+                                })
+                            }}
+                        />
+                    </View>
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Software Version:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={productInfor.softwareVersion}
+                            onChangeText={softwareVersion => {
+                                this.state.productInfor.softwareVersion = softwareVersion;
+                                this.setState({
+                                    productInfor: this.state.productInfor
+                                })
+                            }}
+                        />
+                    </View>
                     <View style={styles.row}>
                         <Text style={styles.label}>Product NO.:</Text>
                         {/* <text>{productInfor.productNumber}</text> */}
@@ -108,14 +151,14 @@ class App extends Component {
                                     isDateTimePickerVisible: true
                                 });
                         }}>{productInfor.productDate}</Text> */}
-                        <View style={{flexDirection: 'row'}}>
-                            <Text onPress={() => {
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={{color: 'blue'}} onPress={() => {
                                 this.setState({
                                     isDateTimePickerVisible: true
                                 });
                             }}>Choose Date</Text>
-                            <Text style={{marginLeft: 10}}>{productInfor.productDate ? moment(new Date(productInfor.productDate.toString())).format('DD-MM-YYYY'): ''}</Text>
-                        </View>                       
+                            <Text style={{ marginLeft: 10 }}>{productInfor.productDate ? moment(new Date(productInfor.productDate.toString())).format('MM/DD/YYYY') : ''}</Text>
+                        </View>
                         {/* <TextInput
                             style={styles.input}
                             value={productInfor.productDate}
@@ -143,7 +186,7 @@ class App extends Component {
                         />
                     </View>
                     <View style={styles.row}>
-                        <Text style={styles.label}>Delivery Days:</Text>
+                        <Text style={styles.label}>Shipment Days:</Text>
                         <TextInput
                             style={styles.input}
                             value={productInfor.deliveryDays ? productInfor.deliveryDays.toString() : ''}
@@ -156,6 +199,20 @@ class App extends Component {
                             }}
                         />
                     </View>
+                    <View style={styles.row}>
+                        <Text style={styles.label}>Special Messages:</Text>
+                        <TextInput
+                            style={styles.input}
+                            value={productInfor.specialMessages}
+                            onChangeText={specialMessages => {
+                                this.state.productInfor.specialMessages = specialMessages;
+                                this.setState({
+                                    productInfor: this.state.productInfor
+                                })
+                            }}
+                        />
+                    </View>
+
 
                     <View style={styles.footer}>
                         <TouchableOpacity
@@ -339,16 +396,33 @@ class App extends Component {
         if (this.state.isWriting) {
             return;
         }
-        let url = this._parseUri(tag);
-        if (url) {
-            Linking.openURL(url)
-                .catch(err => {
-                    console.warn(err);
-                })
-        }
-        let text = this._parseText(tag);
-        this.setState({ productInfor: JSON.parse(text) });
+        // if (this.loaded) {
+        //     Alert.alert(title, 'Are you sure to overwrite?', [{
+        //         text: 'YES', onPress: () => {
+        //             // let url = this._parseUri(tag);
+        //             // if (url) {
+        //             //     Linking.openURL(url)
+        //             //         .catch(err => {
+        //             //             console.warn(err);
+        //             //         })
+        //             // }
+        //             let text = this._parseText(tag);
+        //             this.setState({ productInfor: JSON.parse(text) }, () => {
+        //                 this.loaded = true;
+        //             });
+        //         }
+        //     }, {
+        //         text: 'NO', onPress: () => { }
+        //     }])
+        // }
+        // else {
+            let text = this._parseText(tag);
+            this.setState({ productInfor: JSON.parse(text) }, () => {
+                this.loaded = true;
+            });
+        // }
     }
+
 
     _startDetection = () => {
         NfcManager.registerTagEvent(this._onTagDiscovered)
@@ -453,6 +527,7 @@ var styles = StyleSheet.create({
     footer: {
         flex: 1,
         flexDirection: 'row',
+        justifyContent: 'space-around',
     },
     button: {
         elevation: 4,
@@ -463,7 +538,7 @@ var styles = StyleSheet.create({
         marginTop: 20,
         borderWidth: 1,
         // borderColor: 'blue', 
-        padding: 10
+        // padding: 10
     },
     buttonlabel: {
         textAlign: 'center',
