@@ -134,7 +134,7 @@ class App extends Component {
                         {/* <text>{productInfor.serialNumber}</text> */}
                         <TextInput
                             style={styles.input}
-                            editable={true}
+                            keyboardType={'numeric'}
                             value={productInfor.serialNumber}
                             onChangeText={number => {
                                 this.state.productInfor.serialNumber = number;
@@ -218,7 +218,7 @@ class App extends Component {
                         <TouchableOpacity
                             style={styles.button}
                             onPress={isWriting ? this._cancelNdefWrite : this._requestNdefWrite}>
-                            <Text style={styles.buttonlabel}>{`${isWriting ? 'Cancel' : 'Write NDEF'}`}</Text>
+                            <Text style={styles.buttonlabel}>{`${isWriting ? 'Cancel' : 'Save'}`}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button}
                             onPress={this._clearMessages}>
@@ -226,7 +226,7 @@ class App extends Component {
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button}
                             onPress={this._goToDetail}>
-                            <Text style={styles.buttonlabel}>Load Details</Text>
+                            <Text style={styles.buttonlabel}>Go to Detail</Text>
                         </TouchableOpacity>
 
                         {/* <TouchableOpacity
