@@ -42,8 +42,8 @@ class App extends Component {
             enabled: false,
             isWriting: false,
             productInfor: {
-                productNumber: '',
-                productDate: '',
+                serialNumber: '',
+                producedDate: '',
                 deliveryDays: 0,
                 deviceSKU: '',
                 hardwareVersion: '',
@@ -87,11 +87,11 @@ class App extends Component {
                     {/* <TouchableOpacity style={styles.button} onPress={this._goToNfcSetting}>
                         <Text style={styles.buttonLabel}>Go to NFC setting</Text>
                     </TouchableOpacity> */}
-                    <Text style={{color: 'blue', borderBottomWidth: 1, borderBottomColor: 'blue'}} onPress={this._goToNfcSetting}>Go to NFC setting</Text>
+                    <Text style={{ color: 'blue', borderBottomWidth: 1, borderBottomColor: 'blue' }} onPress={this._goToNfcSetting}>Go to NFC setting</Text>
                     <Text style={styles.header}>Product Information</Text>
 
                     <View style={styles.row}>
-                        <Text style={styles.label}>Product SKU:</Text>
+                        <Text style={styles.label}>Device SKU:</Text>
                         <TextInput
                             style={styles.input}
                             value={productInfor.deviceSKU}
@@ -130,14 +130,14 @@ class App extends Component {
                         />
                     </View>
                     <View style={styles.row}>
-                        <Text style={styles.label}>Product NO.:</Text>
-                        {/* <text>{productInfor.productNumber}</text> */}
+                        <Text style={styles.label}>Serial Number:</Text>
+                        {/* <text>{productInfor.serialNumber}</text> */}
                         <TextInput
                             style={styles.input}
                             editable={true}
-                            value={productInfor.productNumber}
+                            value={productInfor.serialNumber}
                             onChangeText={number => {
-                                this.state.productInfor.productNumber = number;
+                                this.state.productInfor.serialNumber = number;
                                 this.setState({
                                     productInfor: this.state.productInfor
                                 })
@@ -145,23 +145,23 @@ class App extends Component {
                         />
                     </View>
                     <View style={styles.row}>
-                        <Text style={styles.label}>product Date:</Text>
+                        <Text style={styles.label}>Produced Date:</Text>
                         {/* <Text style={[styles.input, {alignItems: 'center'}]} onPress={()=>{
                                 this.setState({
                                     isDateTimePickerVisible: true
                                 });
-                        }}>{productInfor.productDate}</Text> */}
+                        }}>{productInfor.producedDate}</Text> */}
                         <View style={{ flexDirection: 'row' }}>
-                            <Text style={{color: 'blue'}} onPress={() => {
+                            <Text style={{ color: 'blue' }} onPress={() => {
                                 this.setState({
                                     isDateTimePickerVisible: true
                                 });
                             }}>Choose Date</Text>
-                            <Text style={{ marginLeft: 10 }}>{productInfor.productDate ? moment(new Date(productInfor.productDate.toString())).format('MM/DD/YYYY') : ''}</Text>
+                            <Text style={{ marginLeft: 10 }}>{productInfor.producedDate ? moment(new Date(productInfor.producedDate.toString())).format('MM/DD/YYYY') : ''}</Text>
                         </View>
                         {/* <TextInput
                             style={styles.input}
-                            value={productInfor.productDate}
+                            value={productInfor.producedDate}
                             onFocus={() => {
                                 this.setState({
                                     isDateTimePickerVisible: true
@@ -170,9 +170,9 @@ class App extends Component {
                         /> */}
                         <DateTimePicker
                             isVisible={isDateTimePickerVisible}
-                            date={new Date(productInfor.productDate)}
+                            date={new Date(productInfor.producedDate)}
                             onConfirm={(date) => {
-                                this.state.productInfor.productDate = date;
+                                this.state.productInfor.producedDate = date;
                                 this.setState({
                                     isDateTimePickerVisible: false,
                                     productInfor: this.state.productInfor
@@ -200,7 +200,7 @@ class App extends Component {
                         />
                     </View>
                     <View style={styles.row}>
-                        <Text style={styles.label}>Special Messages:</Text>
+                        <Text style={styles.label}>Special Msg:</Text>
                         <TextInput
                             style={styles.input}
                             value={productInfor.specialMessages}
@@ -247,7 +247,7 @@ class App extends Component {
     }
 
     _goToDetail = () => {
-        // let url = '' + this.state.productInfor.productNumber;
+        // let url = '' + this.state.productInfor.serialNumber;
         url = "https://google.com";
         Linking.openURL(url)
             .catch(err => {
@@ -396,31 +396,31 @@ class App extends Component {
         if (this.state.isWriting) {
             return;
         }
-        // if (this.loaded) {
-        //     Alert.alert(title, 'Are you sure to overwrite?', [{
-        //         text: 'YES', onPress: () => {
-        //             // let url = this._parseUri(tag);
-        //             // if (url) {
-        //             //     Linking.openURL(url)
-        //             //         .catch(err => {
-        //             //             console.warn(err);
-        //             //         })
-        //             // }
-        //             let text = this._parseText(tag);
-        //             this.setState({ productInfor: JSON.parse(text) }, () => {
-        //                 this.loaded = true;
-        //             });
-        //         }
-        //     }, {
-        //         text: 'NO', onPress: () => { }
-        //     }])
-        // }
-        // else {
+        if (this.loaded) {
+            Alert.alert(this.title, 'Are you sure to reload data?', [{
+                text: 'YES', onPress: () => {
+                    // let url = this._parseUri(tag);
+                    // if (url) {
+                    //     Linking.openURL(url)
+                    //         .catch(err => {
+                    //             console.warn(err);
+                    //         })
+                    // }
+                    let text = this._parseText(tag);
+                    this.setState({ productInfor: JSON.parse(text) }, () => {
+                        this.loaded = true;
+                    });
+                }
+            }, {
+                text: 'NO', onPress: () => { }
+            }])
+        }
+        else {
             let text = this._parseText(tag);
             this.setState({ productInfor: JSON.parse(text) }, () => {
                 this.loaded = true;
             });
-        // }
+        }
     }
 
 
