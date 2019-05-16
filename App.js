@@ -230,7 +230,7 @@ class App extends Component {
                             <Text style={styles.buttonlabel}>Clear</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button}
-                            onPress={this.productInfor &&　this.productInfor.serialNumber && this._goToDetail}>
+                            onPress={productInfor &&　productInfor.serialNumber && this._goToDetail}>
                             <Text style={styles.buttonlabel}>Go to Detail</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.button}
