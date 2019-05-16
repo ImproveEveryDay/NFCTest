@@ -68,7 +68,7 @@ class App extends Component {
                     this._startDetection();
                 }
             });
-        this._fetchExpireDate();
+        this._fetchExpireProducts();
     }
 
 
@@ -233,6 +233,10 @@ class App extends Component {
                             onPress={this.productInfor &&　this.productInfor.serialNumber && this._goToDetail}>
                             <Text style={styles.buttonlabel}>Go to Detail</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={styles.button}
+                            onPress={this._fetchExpireProducts.bind(this)}>
+                            <Text style={styles.buttonlabel}>Expired Products</Text>
+                        </TouchableOpacity>
 
                         {/* <TouchableOpacity
                         style={{ marginTop: 20, borderWidth: 1, borderColor: 'blue', padding: 10 }}
@@ -251,7 +255,7 @@ class App extends Component {
         )
     }
 
-    _fetchExpireDate() {
+    _fetchExpireProducts() {
         fetch(this.expiredProductsUrl, {
             method: 'GET',
             headers: {
